@@ -1,7 +1,7 @@
 package kr.seoul.mandoo.dfMgr.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +10,10 @@ import lombok.Setter;
 @Entity
 public class Member {
 
-	@javax.persistence.Id @GeneratedValue
-	public Long Id;
+	@javax.persistence.Id
+	@Column(name="USER_ID")
+	public String id;
 	
-	public String userId;
 	public String firstname;
 	public String lastname;
 	public String email;

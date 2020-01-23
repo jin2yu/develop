@@ -37,37 +37,47 @@ public class DfMgrController {
 	@RequestMapping(value=UrlMap.USER_CREATE_URL, method = RequestMethod.POST)
 	public String signup(@RequestBody Map<Object, String> params) {
 		log.info("DfMgrController.signup()");
-		Long memberId = dfMgrService.createMember(params);
+		String userId = dfMgrService.createMember(params);
 		
-		if(memberId != null) {
-			return "success";
+		if(userId != null) {
+			return userId + " success";
 		}else {
-			return "already exist";
+			return userId + "already exist";
 		}
 	}
 	
 	@RequestMapping(value=UrlMap.USER_UPDATE_URL, method = RequestMethod.POST)
-	public void userUpdate(@RequestBody Map<Object, String> params) {
+	public String userUpdate(@RequestBody Map<Object, String> params) {
 		log.info("DfMgrController.userUpdate()");
+		String userId = dfMgrService.updateMember(params);
+		
+		return userId + " info update success";
+		
 	}
 	
 	@RequestMapping(value=UrlMap.USER_DELETE_URL, method = RequestMethod.POST)
-	public void userDelete(@RequestBody Map<Object, String> params) {
+	public String userDelete(@RequestBody Map<Object, String> params) {
 		log.info("DfMgrController.userDelete()");
+		
+		return dfMgrService.deleteMember(params);
 	}
 	
 	@RequestMapping(value=UrlMap.KEYWORD_CREATE_URL, method = RequestMethod.POST)
-	public void keyCreate(@RequestBody Map<Object, String> params) {
+	public String keyCreate(@RequestBody Map<Object, String> params) {
 		log.info("DfMgrController.keyCreate()");
+		return dfMgrService.createKeyword(params);
 	}
 	
 	@RequestMapping(value=UrlMap.KEYWORD_UPDATE_URL, method = RequestMethod.POST)
-	public void keyUpdate(@RequestBody Map<Object, String> params) {
+	public Long keyUpdate(@RequestBody Map<Object, String> params) {
 		log.info("DfMgrController.keyUpdate()");
+		return dfMgrService.updateKeyword(params);
 	}
 	
 	@RequestMapping(value=UrlMap.KEYWORD_DELETE_URL, method = RequestMethod.POST)
 	public void keyDelete(@RequestBody Map<Object, String> params) {
 		log.info("DfMgrController.keyDelete()");
+		dfMgrService.deleteKeyword(params);
+		
 	}
 }

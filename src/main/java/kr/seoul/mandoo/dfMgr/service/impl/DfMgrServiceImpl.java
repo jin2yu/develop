@@ -4,17 +4,24 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kr.seoul.mandoo.dfMgr.entity.Keyword;
 import kr.seoul.mandoo.dfMgr.entity.Member;
+import kr.seoul.mandoo.dfMgr.repository.KeywordRepository;
 import kr.seoul.mandoo.dfMgr.repository.MemberRepository;
 import kr.seoul.mandoo.dfMgr.service.DfMgrService;
 
 @Service
 public class DfMgrServiceImpl implements DfMgrService{
 
-	@Resource
+	@Autowired
 	MemberRepository memberRepository;
+	
+	@Autowired
+	KeywordRepository keywordRepository;
+	
 	
 	@Override
 	public Member getMember(Map<Object, String> param) {
@@ -23,7 +30,7 @@ public class DfMgrServiceImpl implements DfMgrService{
 		String password = param.get("password").toString();
 		
 		Member findMember = new Member();
-		findMember = memberRepository.findByUserIdAndPassword(userId, password);
+		findMember = memberRepository.findByIdAndPassword(userId, password);
 		
 		if(findMember == null) {
 			return null;
@@ -33,7 +40,7 @@ public class DfMgrServiceImpl implements DfMgrService{
 	}
 	
 	@Override
-	public Long createMember(Map<Object, String> param) {
+	public String createMember(Map<Object, String> param) {
 		
 		String userId = param.get("userId").toString();
 		String firstName = param.get("firstName").toString();
@@ -43,9 +50,9 @@ public class DfMgrServiceImpl implements DfMgrService{
 
 		Member newMember = new Member();
 		
-		Member existMember = memberRepository.findByUserId(userId);
+		Member existMember = memberRepository.getOne(userId);
 		if(existMember == null) {
-			newMember.setUserId(userId);
+			newMember.setId(userId);
 			newMember.setFirstname(firstName);
 			newMember.setLastname(lastName);
 			newMember.setEmail(email);
@@ -60,33 +67,66 @@ public class DfMgrServiceImpl implements DfMgrService{
 	}
 
 	@Override
-	public Long updateMember(Map<Object, String> param) {
-		// TODO Auto-generated method stub
-		return null;
+	public String updateMember(Map<Object, String> param) {
+		String userId = param.get("userId").toString();
+		String firstName = param.get("firstName").toString();
+		String lastName = param.get("lastName").toString();
+		String email = param.get("email").toString();
+		String password = param.get("password").toString();
+
+		Member member = memberRepository.getOne(userId);
+		
+		member.setFirstname(firstName);
+		member.setLastname(lastName);
+		member.setEmail(email);
+		member.setPassword(password);
+		
+		return member.getId();
 	}
 
 	@Override
-	public Long deleteMember(Map<Object, String> param) {
-		// TODO Auto-generated method stub
-		return null;
+	public String deleteMember(Map<Object, String> param) {
+		
+		String userId = param.get("userId").toString();
+		String password = param.get("password").toString();
+
+		Member member = memberRepository.findByIdAndPassword(userId, password);
+		
+		memberRepository.delete(member);
+		
+		return "delete success";
 	}
 
 	@Override
-	public Long createKeyword(Map<Object, String> param) {
-		// TODO Auto-generated method stub
-		return null;
+	public String createKeyword(Map<Object, String> param) {
+		String userId = param.get("userId").toString();
+		String keyword = param.get("keyword").toString();
+		
+		Member member = memberRepository.getOne(userId);
+		
+		Keyword key = new Keyword();
+		key.setKeyword(keyword);
+		key.setMember(member);
+		
+		return "success : " + keyword;
 	}
 
 	@Override
 	public Long updateKeyword(Map<Object, String> param) {
-		// TODO Auto-generated method stub
-		return null;
+		Long keyId = Long.valueOf(param.get("id"));
+		String keyword = param.get("keyword").toString();
+		
+		Keyword key = keywordRepository.getOne(keyId);
+		key.setKeyword(keyword);
+		
+		return key.getId();
 	}
 
 	@Override
 	public Long deleteKeyword(Map<Object, String> param) {
-		// TODO Auto-generated method stub
-		return null;
+		Long keyId = Long.valueOf(param.get("id"));
+		keywordRepository.deleteById(keyId);
+		return keyId;
 	}
 
 }
